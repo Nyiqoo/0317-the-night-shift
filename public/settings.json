@@ -1,6 +1,6 @@
 {
   "juego": {
-    "nombre": "03:23 — THE NIGHT SHIFT",
+    "nombre": "3:23 — THE NIGHT SHIFT",
     "idioma": "es",
     "horaDeInicio": "03:23",
     "guardarProgresoEnNavegador": false,
@@ -51,9 +51,10 @@
   },
   "audio": {
     "activarSonido": true,
-    "volumenMusica": 0.25,
-    "volumenAmbiente": 0.3,
-    "volumenEfectos": 0.5
+    "volumenMusica": 0.18,
+    "volumenAmbiente": 0.28,
+    "volumenEfectos": 0.45,
+    "volumenNarrativa": 0.55
   },
   "entidad": {
     "activarEventosAmbientales": false,
@@ -61,12 +62,20 @@
     "probabilidadDeAnomalia": 0.12,
     "intervaloMinimoEntreEventosMs": 14000
   },
+  "progresion": {
+    "habitacionesIniciales": ["security", "hallway", "archive"],
+    "salidaRequiere": ["archivo-administrativo"]
+  },
   "misiones": [
     {
       "id": "archivo-administrativo",
       "titulo": "Revisa el archivo administrativo y localiza el expediente de mantenimiento del antiguo supervisor",
       "destino": "Archivo administrativo",
-      "estadoVisible": "Activa · pendiente de visita"
+      "habitacion": "archive",
+      "estadoInicial": "activa",
+      "requisitos": [],
+      "desbloqueaHabitaciones": [],
+      "completadaCuando": ["night-shift-puzzle-solved", "night-shift-manifestation"]
     }
   ],
   "camaras": {

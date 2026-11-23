@@ -1,4 +1,4 @@
-# 03:23 — THE NIGHT SHIFT
+# 3:23 — THE NIGHT SHIFT
 
 Juego de terror psicológico 2D para navegador. En el turno inicial, un guardia contratado para una noche aparentemente normal recorre la oficina de seguridad, el pasillo principal y el archivo administrativo, recibe su primera tarea y consulta tres cámaras del edificio.
 
@@ -55,9 +55,10 @@ La aplicación carga este archivo antes de crear el juego. Si está ausente o un
 | `controles` | Teclas para interactuar y pausar | Nombres de tecla de Phaser |
 | `visual` | Paleta, brillo, contraste, viñeta y niebla | Colores `#RRGGBB`; intensidades 0–1 |
 | `animacion` | Transiciones y velocidad de animación | Milisegundos; velocidad 0.1–4 |
-| `audio` | Activación y volúmenes de música, ambiente y efectos | Volumen 0–1 |
+| `audio` | Activación y niveles independientes de música, ambiente, efectos y narrativa | Volumen 0–1; ajustables desde el panel de audio |
 | `entidad` | Probabilidad, duración e intervalo de eventos futuros | Probabilidad 0–1; tiempos en ms |
-| `misiones` | Texto, destino y estado visible de la misión inicial | Lista de objetivos |
+| `progresion` | Habitaciones disponibles al inicio y requisitos de salida | IDs de habitación y misión |
+| `misiones` | Objetivos secuenciales, prerrequisitos, habitaciones que habilitan y condiciones de término | Lista de objetivos configurada; no añade contenido automáticamente |
 | `camaras` | Identificador, ubicación e imagen de cada canal | Tres canales definidos |
 | `edificio` | Cantidad prevista de habitaciones y mapas de transformación | Booleanos; conteo de habitaciones |
 | `puzzles` | Pistas, temporizador y facilidad previstos por puzle | Pistas ≥ 0; segundos; facilidad 0–1 |
@@ -75,8 +76,8 @@ Los ajustes de anomalías, puzles y transformaciones están preparados para ampl
 - `src/ui/CCTVPanel.js`: selección de cámaras y reloj de vigilancia.
 - `public/settings.json`: ajustes y contenido editable.
 
-El progreso de esta entrega no se guarda. La primera tarea sigue pendiente de localizar el expediente de mantenimiento. El archivador mecánico se puede inspeccionar, pero su puzzle todavía no está implementado. Esta entrega no incluye transformaciones del edificio, anomalías complejas ni grabaciones del pasado.
+El progreso se conserva durante la sesión del navegador. Las habitaciones actuales son la oficina, el pasillo y el archivo. La salida exterior permanece bloqueada hasta resolver el puzzle narrativo existente y completar su recuerdo. La progresión se configura en `public/settings.json`; no se agregaron misiones ni habitaciones futuras. El CCTV puede encenderse/apagarse y cambiar entre sus tres vistas. La música ambiental, el ambiente, los efectos y los sonidos narrativos tienen niveles independientes; el audio se activa tras una interacción del usuario y cambia de forma gradual al cambiar de habitación.
 
 ## Créditos y licencia
 
-Los gráficos de habitaciones, guardia, mobiliario y CCTV están dibujados con formas originales; no se incorporaron recursos gráficos o de audio descargados. Consulta [CREDITS.md](CREDITS.md). El código se publica bajo licencia MIT; el titular aparece como marcador por completar en [LICENSE](LICENSE).
+Los gráficos de habitaciones, guardia, mobiliario y CCTV están dibujados con formas originales. Música y efectos de esta entrega se sintetizan en el navegador con Web Audio; no se incorporaron recursos gráficos o de audio descargados. Consulta [CREDITS.md](CREDITS.md). El código se publica bajo licencia MIT; el titular aparece como marcador por completar en [LICENSE](LICENSE).

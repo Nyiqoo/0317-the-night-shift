@@ -242,4 +242,22 @@ body { min-height:100dvh; overflow-x:hidden; }
 .layout:fullscreen .fullscreen-mission-open { position:absolute; z-index:5; top:10px; left:10px; right:auto; display:block; max-width:min(300px,45vw); padding:7px 10px; border:1px solid #bdca9b70; background:#080e0ee8; color:#e4e9dc; font:10px/1.4 monospace; text-align:left; white-space:normal; cursor:pointer; }
 .layout:fullscreen #game,.layout:fullscreen #game canvas { width:100% !important; height:100% !important; min-height:0; max-width:none; max-height:none; }
 .layout:fullscreen .mission-popup { z-index:6; }
+
+.cctv-statusbar { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:8px; color:#aab7a9; font:8px 'DM Mono',monospace; }
+.cctv-statusbar #cctv-signal[data-state="offline"] { color:#c8877a; }
+#cctv-power { padding:6px 8px; border:1px solid #718174; background:#111a17; color:#d9e2d1; font:8px 'DM Mono',monospace; cursor:pointer; }
+#cctv-power:hover { border-color:#c2d0a9; }
+.camera-feed::before { position:absolute; z-index:1; inset:0; display:grid; place-items:center; content:attr(data-signal-label); color:#d48d7b; font:12px 'DM Mono',monospace; letter-spacing:.18em; text-shadow:0 0 10px #c37767; pointer-events:none; }
+.camera-feed[data-signal="offline"] .camera-art { opacity:.11; filter:grayscale(1); }
+.audio-settings { padding:10px 12px; color:#d1dacc; font:9px 'DM Mono',monospace; }
+.audio-settings summary { cursor:pointer; color:#c7d4bf; }
+.audio-settings label { display:grid; grid-template-columns:70px 1fr; align-items:center; gap:8px; margin-top:9px; color:#9eaca1; }
+.audio-settings input { width:100%; accent-color:#9fb28a; }
+.ending-overlay { position:absolute; z-index:11; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px; padding:30px; background:#05090af2; color:#dce4d5; text-align:center; }
+.ending-overlay[hidden] { display:none; }
+.ending-overlay h2 { margin:0; font:clamp(20px,3vw,32px) 'Courier New',monospace; }
+.ending-overlay > p:not(.eyebrow) { max-width:430px; color:#aebaa9; font:12px/1.7 'DM Mono',monospace; }
+#restart-game { padding:10px 14px; border:1px solid #b0bd99; background:#283329; color:#e0e8d7; font:10px 'DM Mono',monospace; cursor:pointer; }
+#restart-game:hover { background:#354334; }
+@media (max-width:900px) { .audio-settings { grid-column:1/-1; } }
 body[data-ceiling-lights="on"] .scanlines { opacity:.6; background:radial-gradient(circle at var(--light-x,50%) var(--light-y,50%),transparent 0 70px,#01020428 150px,#02030780 350px,#010205d9 700px),repeating-linear-gradient(0deg,#d9e4d80c 0 1px,transparent 1px 4px); }

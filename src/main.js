@@ -4,6 +4,7 @@ import { SecurityOfficeScene } from './scenes/SecurityOfficeScene.js';
 import { CCTVPanel } from './ui/CCTVPanel.js';
 import { MissionBoard } from './ui/MissionBoard.js';
 import { AudioDirector } from './audio/AudioDirector.js';
+import { MissionProgression } from './systems/MissionProgression.js';
 
 const { settings, issues } = await loadSettings();
 document.title = settings.juego.nombre;
@@ -20,7 +21,10 @@ if (issues.length) {
 
 const audio = new AudioDirector(settings.audio);
 const cctv = new CCTVPanel(settings.camaras.canales, settings.juego.horaDeInicio, audio);
-new MissionBoard(settings.misiones);
+const progression = new MissionProgression(settings.progresion, settings.misiones);
+new MissionBoard(progression);
+audio.bindControls();
+audio.setRoom('menu');
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -37,7 +41,7 @@ const game = new Phaser.Game({
     arcade: { gravity: { x: 0, y: 0 }, debug: settings.depuracion.mostrarColisiones },
   },
   render: { antialias: false, pixelArt: true, roundPixels: true },
-  scene: [new SecurityOfficeScene(settings, cctv, audio)],
+  scene: [new SecurityOfficeScene(settings, cctv, audio, progression)],
 });
 
 const fullscreenButton = document.querySelector('#fullscreen-toggle');

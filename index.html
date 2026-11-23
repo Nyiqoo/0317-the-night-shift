@@ -4,16 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a1117" />
-    <title>03:23 — THE NIGHT SHIFT</title>
+    <title>3:23 — THE NIGHT SHIFT</title>
     <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
     <main class="layout">
       <header class="masthead">
-        <div class="brand-mark" aria-hidden="true">03:23</div>
+        <div class="brand-mark" aria-hidden="true">3:23</div>
         <div>
           <p class="eyebrow">REGISTRO DE TURNO · 23 NOV 2026</p>
-          <h1>03:23 <span>— THE NIGHT SHIFT</span></h1>
+          <h1>3:23 <span>— THE NIGHT SHIFT</span></h1>
         </div>
         <div class="live-status"><i aria-hidden="true"></i> EN SERVICIO</div>
       </header>
@@ -42,12 +42,16 @@
           <section id="clue-modal" class="document-modal clue-modal" role="dialog" aria-modal="true" aria-labelledby="clue-title" hidden><button id="clue-close" class="popup-close" type="button" aria-label="Cerrar registro">×</button><p class="eyebrow">PISTAS REUNIDAS</p><h2 id="clue-title">Registro de investigación</h2><ul id="clue-list"></ul><p class="modal-hint">Esc · cerrar</p></section>
           <section id="puzzle-modal" class="document-modal puzzle-modal" role="dialog" aria-modal="true" aria-labelledby="puzzle-title" hidden><button id="puzzle-close" class="popup-close" type="button" aria-label="Cerrar mecanismo">×</button><p class="eyebrow">PUZZLE 01 · MECANISMO</p><h2 id="puzzle-title">El registro imposible</h2><p>Reconstruye la secuencia a partir de las cuatro pistas reunidas.</p><div class="event-slots"><label>01<select id="slot-1"></select></label><label>02<select id="slot-2"></select></label><label>03<select id="slot-3"></select></label></div><p id="puzzle-feedback" role="status"></p><button id="puzzle-submit" type="button">Probar secuencia</button><p class="modal-hint">Esc · cerrar</p></section>
           <section id="memory-overlay" class="memory-overlay" hidden><div class="memory-frame"><span id="memory-scene" class="memory-scene"></span><p id="memory-caption"></p></div></section>
+          <section id="ending-overlay" class="ending-overlay" role="dialog" aria-modal="true" aria-labelledby="ending-title" hidden>
+            <p class="eyebrow">EDIFICIO 04 · SALIDA EXTERIOR</p><h2 id="ending-title">Has salido del edificio.</h2>
+            <p>La puerta se cierra detrás de ti. Por ahora, el turno terminó.</p><button id="restart-game" type="button">Volver al menú</button>
+          </section>
           <section id="mission-popup" class="mission-popup" aria-labelledby="mission-heading" hidden>
             <button id="mission-close" class="popup-close" type="button" aria-label="Cerrar lista de tareas">×</button>
             <div class="panel-heading"><span class="panel-index">01</span><div><h2 id="mission-heading">Tarea para la casa y tarea se fué</h2><p>ESTADO DEL TURNO</p></div><span class="mission-badge">EN CURSO</span></div>
             <div class="mission-content"><p class="eyebrow">OBJETIVO ACTUAL</p><h3 id="mission-title"></h3><div class="mission-details"><div><span>DESTINO</span><strong id="mission-destination"></strong></div><div><span>ESTADO</span><strong id="mission-status"></strong></div></div><div class="pending-block"><span class="eyebrow">OBJETIVOS PENDIENTES</span><ul id="pending-objectives"></ul></div></div>
           </section>
-          <section id="start-screen" class="start-screen"><p class="eyebrow">REGISTRO DE TURNO · 03:23 AM</p><h2>03:23 <span>— THE NIGHT SHIFT</span></h2><p>Tu primer turno nocturno empieza en la oficina de seguridad.</p><div class="start-controls"><span><kbd>W A S D</kbd> o flechas · moverse</span><span><kbd>E</kbd> · inspeccionar</span><span><kbd>L</kbd> · luces del techo</span><span><kbd>Esc</kbd> · pausa</span></div><button id="start-button" type="button">Iniciar turno</button></section>
+          <section id="start-screen" class="start-screen"><p class="eyebrow">REGISTRO DE TURNO · 03:23 AM</p><h2>3:23 <span>— THE NIGHT SHIFT</span></h2><p>Tu primer turno nocturno empieza en la oficina de seguridad.</p><div class="start-controls"><span><kbd>W A S D</kbd> o flechas · moverse</span><span><kbd>E</kbd> · inspeccionar</span><span><kbd>L</kbd> · luces del techo</span><span><kbd>Esc</kbd> · pausa</span></div><button id="start-button" type="button">Iniciar turno</button></section>
         </div>
         <p id="settings-warning" class="settings-warning" role="alert" hidden></p>
       </section>
@@ -58,7 +62,7 @@
         <section id="cctv-panel" class="panel camera-panel" aria-labelledby="camera-heading">
           <div class="panel-heading">
             <span class="panel-index">02</span>
-            <div><h2 id="camera-heading">Vigilancia CCTV</h2><p>SEÑAL EN VIVO</p></div>
+            <div><h2 id="camera-heading">Vigilancia CCTV</h2><p id="cctv-header-status">SEÑAL EN VIVO</p></div>
             <span class="recording">REC</span>
           </div>
           <div class="camera-content">
@@ -110,6 +114,7 @@
               </div>
               <div class="camera-location"><span>UBICACIÓN</span><strong id="camera-location">Pasillo principal</strong></div>
             </div>
+            <div class="cctv-statusbar"><span id="cctv-signal" role="status">EN LÍNEA · CAM-01</span><button id="cctv-power" type="button" aria-pressed="true">Apagar CCTV</button></div>
             <div id="camera-controls" class="camera-controls" aria-label="Seleccionar cámara">
               <button class="camera-button selected" type="button" data-camera-index="0" aria-pressed="true"><span>CAM-01</span><small>Pasillo principal</small></button>
               <button class="camera-button" type="button" data-camera-index="1" aria-pressed="false"><span>CAM-02</span><small>Archivo administrativo</small></button>
@@ -122,6 +127,13 @@
         <section class="panel controls-panel" aria-label="Controles">
           <div class="controls-inline"><span><kbd>W A S D</kbd> mover</span><span><kbd>E</kbd> interactuar</span><span><kbd>L</kbd> luces techo</span><span><kbd>Esc</kbd> pausa</span></div>
         </section>
+        <details id="audio-settings" class="panel audio-settings">
+          <summary>Audio · niveles independientes</summary>
+          <label>Música<input type="range" min="0" max="1" step="0.01" data-audio-volume="music" aria-label="Volumen de música"></label>
+          <label>Ambiente<input type="range" min="0" max="1" step="0.01" data-audio-volume="ambience" aria-label="Volumen ambiental"></label>
+          <label>Efectos<input type="range" min="0" max="1" step="0.01" data-audio-volume="effects" aria-label="Volumen de efectos"></label>
+          <label>Narrativa<input type="range" min="0" max="1" step="0.01" data-audio-volume="narrative" aria-label="Volumen narrativo"></label>
+        </details>
       </aside>
     </main>
     <script type="module" src="/src/main.js"></script>

@@ -9,11 +9,12 @@ const INVESTIGATION_FILES = {
 };
 
 export class SecurityOfficeScene extends Phaser.Scene {
-  constructor(settings, cctv, audio = null) {
+  constructor(settings, cctv, audio = null, progression = null) {
     super('security-office');
     this.settings = settings;
     this.cctv = cctv;
     this.audio = audio;
+    this.progression = progression;
   }
 
   init(data) {
@@ -27,6 +28,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
   }
 
   create() {
+    this.progression?.syncFromNarrative();
     this.createTextures();
     this.nightOffice = new NightOffice(this);
     this.blockers = this.physics.add.staticGroup();
@@ -40,6 +42,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
     this.lightCore = this.add.circle(this.player.x, this.player.y, 34, 0xd7e5b7, 0.06).setBlendMode(Phaser.BlendModes.ADD).setDepth(9);
     this.createControls();
     this.isPaused = !document.querySelector('#start-screen').hidden;
+    this.audio?.setRoom(this.isPaused ? 'menu' : this.roomId);
     if (this.isPaused) this.physics.world.pause();
     this.interactionKeyHandler = () => this.interact();
     this.pauseKeyHandler = () => this.togglePause();
@@ -62,6 +65,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
       this.missionOpen?.removeEventListener('click', this.openMissionHandler);
       this.fullscreenMissionOpen?.removeEventListener('click', this.openMissionHandler);
       this.missionClose?.removeEventListener('click', this.closeMissionHandler);
+      this.restartButton?.removeEventListener('click', this.restartHandler);
       this.documentClose?.removeEventListener('click', this.closeDocumentHandler);
       this.clueClose?.removeEventListener('click', this.closeClueHandler);
       this.clueToggle?.removeEventListener('click', this.openClueHandler);
@@ -71,7 +75,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
       this.memoryTimers.forEach((timer) => window.clearTimeout(timer));
       window.clearTimeout(this.messageTimer);
     });
-    this.cctv.setEnabled(this.roomId === 'security');
+    this.cctv.setAvailable(this.roomId === 'security');
     this.updateRoomLabel();
     if (this.roomId === 'hallway') this.showMessage('El pasillo une la oficina de seguridad con el archivo administrativo.');
     if (this.roomId === 'archive') this.showMessage('El archivo huele a papel húmedo y polvo. Algunas cajas llevan años sin abrirse.');
@@ -150,6 +154,18 @@ export class SecurityOfficeScene extends Phaser.Scene {
     this.add.rectangle(x, insideY, width - 14, 1, 0xe3d3aa, 0.28).setDepth(8);
   }
 
+  drawSideDoorFrame(x, y, { height = 112, open = false } = {}) {
+    this.add.rectangle(x, y - height / 2, 42, 8, 0xb49a6c).setDepth(7);
+    this.add.rectangle(x, y + height / 2, 42, 8, 0xb49a6c).setDepth(7);
+    this.add.rectangle(x, y, 28, height - 12, 0x3a3127).setStrokeStyle(2, 0x927b57, 0.9).setDepth(7);
+    if (open) {
+      this.add.rectangle(x + 32, y, 58, 12, 0x927b57).setStrokeStyle(1, 0xc3ad82, 0.65).setDepth(8);
+    } else {
+      this.add.rectangle(x, y, 5, height - 25, 0x574832).setDepth(8);
+      this.add.circle(x + 9, y, 2, 0xc5a86e).setDepth(9);
+    }
+  }
+
   addObstacle(x, y, width, height, color, label = '') {
     this.add.rectangle(x, y + 4, width + 10, height + 10, 0x0a1110, 0.35).setDepth(2);
     this.add.rectangle(x, y, width, height, Phaser.Display.Color.HexStringToColor(color).color)
@@ -192,8 +208,8 @@ export class SecurityOfficeScene extends Phaser.Scene {
       .setOrigin(0.5).setDepth(6).setAlpha(0.85);
   }
 
-  addTarget(kind, x, y, prompt, message) {
-    this.interactionTargets.push({ kind, x, y, prompt, message });
+  addTarget(kind, x, y, prompt, message, { destination = null } = {}) {
+    this.interactionTargets.push({ kind, x, y, prompt, message, destination });
     if (this.roomId !== 'security') {
       this.add.circle(x, y - 24, 9, 0x111916, 0.88).setStrokeStyle(1, 0xc5b585, 0.88).setDepth(12);
       this.add.text(x, y - 24, 'E', {
@@ -224,7 +240,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
     this.add.text(width / 2, height - 27, 'PUERTA · PASILLO PRINCIPAL', {
       fontFamily: 'monospace', fontSize: '8px', color: colors.texto, letterSpacing: 1,
     }).setOrigin(0.5, 0).setDepth(6).setAlpha(0.7);
-    this.addTarget('office-exit', width / 2, height - 62, 'Salir al pasillo principal', 'La puerta de seguridad se abre hacia el pasillo.');
+    this.addTarget('office-exit', width / 2, height - 62, 'Salir al pasillo principal', 'La puerta de seguridad se abre hacia el pasillo.', { destination: 'hallway' });
 
     this.drawWallClock(792, 158, colors.texto);
     this.nightOffice.addCeilingLamp(330, 145, { spreadX: 230, spreadY: 180 });
@@ -287,18 +303,32 @@ export class SecurityOfficeScene extends Phaser.Scene {
     const sideCenterY = (wallTop + wallBottom) / 2;
     this.addWall((wallLeft + doorwayLeft) / 2, wallTop, doorwayLeft - wallLeft, 34);
     this.addWall((doorwayRight + wallRight) / 2, wallTop, wallRight - doorwayRight, 34);
-    this.addWall(70, sideCenterY, 34, sideHeight);
+    const exitCenterY = 500;
+    const exitHeight = 112;
+    const wallOuterTop = wallTop - 17;
+    const wallOuterBottom = wallBottom + 17;
+    const exitOuterTop = exitCenterY - exitHeight / 2;
+    const exitOuterBottom = exitCenterY + exitHeight / 2;
+    this.addWall(70, (wallOuterTop + exitOuterTop) / 2, 34, exitOuterTop - wallOuterTop);
+    this.addWall(70, (exitOuterBottom + wallOuterBottom) / 2, 34, wallOuterBottom - exitOuterBottom);
+    const exitUnlocked = this.progression?.canLeaveBuilding() ?? false;
+    if (!exitUnlocked) this.addWall(70, exitCenterY, 34, exitHeight);
+    this.drawSideDoorFrame(70, exitCenterY, { height: exitHeight, open: exitUnlocked });
+    this.add.rectangle(144, exitCenterY, 116, 22, 0x18211e).setStrokeStyle(1, 0x788276, 0.48).setDepth(5);
+    this.add.text(144, exitCenterY, 'SALIDA EXTERIOR', { fontFamily: 'monospace', fontSize: '7px', color: colors.texto, letterSpacing: 1 })
+      .setOrigin(0.5).setDepth(6).setAlpha(0.75);
+    this.addTarget('building-exit', 82, exitCenterY, 'Intentar salir del Edificio 04', '');
     this.addWall(width - 70, sideCenterY, 34, sideHeight);
     this.addWall((wallLeft + doorwayLeft) / 2, wallBottom, doorwayLeft - wallLeft, 34);
     this.addWall((doorwayRight + wallRight) / 2, wallBottom, wallRight - doorwayRight, 34);
 
     this.drawDoorFrame(width / 2, 82, { width: 172, opensDown: false });
     this.add.text(width / 2, 104, 'OFICINA DE SEGURIDAD', { fontFamily: 'monospace', fontSize: '8px', color: colors.texto, letterSpacing: 1 }).setOrigin(0.5).setDepth(6);
-    this.addTarget('hall-office', width / 2, 118, 'Volver a la oficina de seguridad', 'La oficina sigue conectada al pasillo.');
+    this.addTarget('hall-office', width / 2, 118, 'Volver a la oficina de seguridad', 'La oficina sigue conectada al pasillo.', { destination: 'security' });
 
     this.drawDoorFrame(width / 2, height - 52, { width: 172, opensDown: true });
     this.add.text(width / 2, height - 28, 'ARCHIVO ADMINISTRATIVO', { fontFamily: 'monospace', fontSize: '8px', color: colors.texto, letterSpacing: 1 }).setOrigin(0.5, 0).setDepth(6);
-    this.addTarget('hall-archive', width / 2, height - 64, 'Entrar al archivo administrativo', 'La puerta cede con un quejido. El polvo del otro lado lleva tiempo sin moverse.');
+    this.addTarget('hall-archive', width / 2, height - 64, 'Entrar al archivo administrativo', 'La puerta cede con un quejido. El polvo del otro lado lleva tiempo sin moverse.', { destination: 'archive' });
 
     for (const [index, y] of [185, 310, 435].entries()) {
       this.add.rectangle(150, y, 96, 17, 0x48554e).setStrokeStyle(1, 0x78847a, 0.45).setDepth(3);
@@ -350,7 +380,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
     this.add.text(width / 2, 102, 'PASILLO PRINCIPAL', {
       fontFamily: 'monospace', fontSize: '8px', color: colors.texto, letterSpacing: 1,
     }).setOrigin(0.5).setDepth(6).setAlpha(0.72);
-    this.addTarget('archive-exit', width / 2, 122, 'Volver al pasillo principal', 'La puerta del archivo se abre al pasillo.');
+    this.addTarget('archive-exit', width / 2, 122, 'Volver al pasillo principal', 'La puerta del archivo se abre al pasillo.', { destination: 'hallway' });
 
     const papers = [
       ['doc-maintenance', 322, 344, 'Libro de mantenimiento'],
@@ -426,11 +456,13 @@ export class SecurityOfficeScene extends Phaser.Scene {
     this.promptElement = document.querySelector('#interaction-prompt');
     this.pauseElement = document.querySelector('#pause-overlay');
     this.startScreen = document.querySelector('#start-screen');
+    this.endingOverlay = document.querySelector('#ending-overlay');
     this.missionPopup = document.querySelector('#mission-popup');
     this.startButton = document.querySelector('#start-button');
     this.missionOpen = document.querySelector('#mission-open');
     this.fullscreenMissionOpen = document.querySelector('#fullscreen-mission-open');
     this.missionClose = document.querySelector('#mission-close');
+    this.restartButton = document.querySelector('#restart-game');
     this.playerLight = document.querySelector('.player-light');
     this.documentModal = document.querySelector('#document-modal');
     this.documentTitle = document.querySelector('#document-title');
@@ -447,13 +479,26 @@ export class SecurityOfficeScene extends Phaser.Scene {
     this.puzzleFeedback = document.querySelector('#puzzle-feedback');
     this.puzzleSlots = [1, 2, 3].map((n) => document.querySelector(`#slot-${n}`));
     this.memoryOverlay = document.querySelector('#memory-overlay');
-    this.startHandler = () => { this.startScreen.hidden = true; this.isPaused = false; this.physics.world.resume(); this.audio?.start(); this.game.canvas.focus(); };
+    this.startHandler = () => {
+      this.startScreen.hidden = true;
+      this.isPaused = false;
+      this.physics.world.resume();
+      this.audio?.start().then(() => { this.audio?.setRoom(this.roomId); this.audio?.play('time-motif'); });
+      this.game.canvas.focus();
+    };
     this.openMissionHandler = () => { this.missionPopup.hidden = false; this.game.canvas.focus(); };
     this.closeMissionHandler = () => { this.missionPopup.hidden = true; this.game.canvas.focus(); };
     this.startButton.addEventListener('click', this.startHandler);
     this.missionOpen.addEventListener('click', this.openMissionHandler);
     this.fullscreenMissionOpen.addEventListener('click', this.openMissionHandler);
     this.missionClose.addEventListener('click', this.closeMissionHandler);
+    this.restartHandler = () => {
+      ['night-shift-mission-progression-v1', 'night-shift-puzzle-solved', 'night-shift-clues', 'night-shift-memory',
+        'night-shift-manifestation', 'night-shift-transformation', 'night-shift-cctv-powered', 'night-shift-ceiling-lights']
+        .forEach((key) => sessionStorage.removeItem(key));
+      window.location.reload();
+    };
+    this.restartButton.addEventListener('click', this.restartHandler);
     this.documentCloseHandler = () => this.closeReading();
     this.clueCloseHandler = () => { this.clueModal.hidden = true; this.physics.world.resume(); this.game.canvas.focus(); };
     this.openClueHandler = () => { this.clueModal.hidden = false; this.physics.world.pause(); this.game.canvas.focus(); };
@@ -479,7 +524,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
     if (this.boundCanvasClick) this.game.canvas.removeEventListener('pointerdown', this.boundCanvasClick);
   }
 
-  update() {
+  update(time, delta = 16) {
     if (!this.player || this.isPaused) return;
     const speed = this.settings.jugador.velocidad;
     let x = 0;
@@ -491,6 +536,10 @@ export class SecurityOfficeScene extends Phaser.Scene {
     if (pressed(this.settings.jugador.teclas.abajo)) y += 1;
     const length = Math.hypot(x, y) || 1;
     this.player.setVelocity((x / length) * speed, (y / length) * speed);
+    if (x || y) {
+      this.stepTimer = (this.stepTimer ?? 0) + delta;
+      if (this.stepTimer >= 430) { this.audio?.play('step'); this.stepTimer = 0; }
+    } else this.stepTimer = 0;
     this.lightHalo?.setPosition(this.player.x, this.player.y);
     this.lightCore?.setPosition(this.player.x, this.player.y);
     if (this.playerLight) {
@@ -525,6 +574,22 @@ export class SecurityOfficeScene extends Phaser.Scene {
       this.showMessage('No hay nada al alcance. Acércate a un objeto o a una puerta.');
       return;
     }
+    if (target.destination && !this.progression?.isRoomUnlocked(target.destination)) {
+      this.audio?.play('error');
+      this.showMessage(this.progression?.lockedRoomMessage() ?? 'Acceso restringido. Completa el objetivo actual para continuar.');
+      return;
+    }
+    if (target.kind === 'building-exit') {
+      if (!this.progression?.canLeaveBuilding()) {
+        this.audio?.play('error');
+        this.showMessage(this.progression?.exitLockedMessage() ?? 'La salida está cerrada.');
+        return;
+      }
+      this.audio?.play('door');
+      this.endingOverlay.hidden = false;
+      this.physics.world.pause();
+      return;
+    }
     if (INVESTIGATION_FILES[target.kind]) {
       this.audio?.play('paper');
       this.openReading(target.kind);
@@ -532,14 +597,17 @@ export class SecurityOfficeScene extends Phaser.Scene {
     }
     this.audio?.play('interact');
     if (target.kind === 'office-exit') {
+      this.audio?.play('door');
       this.scene.restart({ room: 'hallway', spawn: 'office' });
       return;
     }
     if (target.kind === 'hall-office') {
+      this.audio?.play('door');
       this.scene.restart({ room: 'security' });
       return;
     }
     if (target.kind === 'hall-archive') {
+      this.audio?.play('door');
       this.scene.restart({ room: 'archive' });
       return;
     }
@@ -547,6 +615,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
       const transform = sessionStorage.getItem('night-shift-manifestation') === '1'
         && sessionStorage.getItem('night-shift-transformation') !== '1';
       if (transform) sessionStorage.setItem('night-shift-transformation', '1');
+      this.audio?.play('door');
       this.scene.restart({ room: 'hallway', spawn: 'archive', transformation: transform });
       return;
     }
@@ -651,6 +720,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
 
   openOriginalReport() {
     if (!this.isPuzzleSolved()) return;
+    this.progression?.syncFromNarrative();
     this.documentTitle.textContent = 'Informe original de vigilancia';
     this.documentText.textContent = 'Fecha: 14/06/2014.\nDesactivación: 03:12–03:26.\nUsuario asociado: credencial local del protagonista.';
     this.documentProgress.textContent = 'Informe recuperado del compartimento oculto.';
@@ -662,6 +732,7 @@ export class SecurityOfficeScene extends Phaser.Scene {
 
   playFragmentedMemory() {
     sessionStorage.setItem('night-shift-memory', '1');
+    this.audio?.play('memory');
     const frames = [
       ['Una mano sobre el panel de vigilancia.', 'hand'],
       ['«Desactiva las cámaras. Es la única manera de protegerlo».', 'voice'],
@@ -675,6 +746,8 @@ export class SecurityOfficeScene extends Phaser.Scene {
       if (index === frames.length) {
         this.memoryOverlay.hidden = true;
         sessionStorage.setItem('night-shift-manifestation', '1');
+        this.progression?.syncFromNarrative();
+        this.audio?.play('discovery');
         this.documentModal.hidden = false;
         return;
       }

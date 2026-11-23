@@ -1,5 +1,5 @@
 export const DEFAULT_SETTINGS = {
-  juego: { nombre: '03:23 — THE NIGHT SHIFT', idioma: 'es', horaDeInicio: '03:23', guardarProgresoEnNavegador: false, datosDePartidaIniciales: {} },
+  juego: { nombre: '3:23 — THE NIGHT SHIFT', idioma: 'es', horaDeInicio: '03:23', guardarProgresoEnNavegador: false, datosDePartidaIniciales: {} },
   pantalla: { anchoLogico: 960, altoLogico: 640, ajustarAlNavegador: true, tamanoDePixel: 1 },
   jugador: {
     velocidad: 190,
@@ -16,9 +16,14 @@ export const DEFAULT_SETTINGS = {
     brillo: 0.88, contraste: 1, intensidadDeVineta: 0.3, nivelDeNiebla: 0,
   },
   animacion: { duracionDeTransicionMs: 350, velocidadDeAnimacion: 1, intensidadDeParpadeo: 0.25 },
-  audio: { activarSonido: true, volumenMusica: 0.25, volumenAmbiente: 0.3, volumenEfectos: 0.5 },
+  audio: { activarSonido: true, volumenMusica: 0.18, volumenAmbiente: 0.28, volumenEfectos: 0.45, volumenNarrativa: 0.55 },
   entidad: { activarEventosAmbientales: false, duracionDeAnomaliaMs: 1600, probabilidadDeAnomalia: 0.12, intervaloMinimoEntreEventosMs: 14000 },
-  misiones: [{ id: 'archivo-administrativo', titulo: 'Revisa el archivo administrativo y localiza el expediente de mantenimiento del antiguo supervisor', destino: 'Archivo administrativo', estadoVisible: 'Activa · pendiente de visita' }],
+  progresion: { habitacionesIniciales: ['security', 'hallway', 'archive'], salidaRequiere: ['archivo-administrativo'] },
+  misiones: [{
+    id: 'archivo-administrativo', titulo: 'Revisa el archivo administrativo y localiza el expediente de mantenimiento del antiguo supervisor',
+    destino: 'Archivo administrativo', habitacion: 'archive', estadoInicial: 'activa', requisitos: [], desbloqueaHabitaciones: [],
+    completadaCuando: ['night-shift-puzzle-solved', 'night-shift-manifestation'],
+  }],
   camaras: {
     frecuenciaDeCambioMs: 12000,
     canales: [
@@ -108,7 +113,7 @@ function validateSettings(input) {
   }
 
   for (const [section, key, min, max] of [
-    ['audio', 'volumenMusica', 0, 1], ['audio', 'volumenAmbiente', 0, 1], ['audio', 'volumenEfectos', 0, 1],
+    ['audio', 'volumenMusica', 0, 1], ['audio', 'volumenAmbiente', 0, 1], ['audio', 'volumenEfectos', 0, 1], ['audio', 'volumenNarrativa', 0, 1],
     ['entidad', 'duracionDeAnomaliaMs', 100, 30000], ['entidad', 'probabilidadDeAnomalia', 0, 1],
     ['entidad', 'intervaloMinimoEntreEventosMs', 1000, 300000], ['camaras', 'frecuenciaDeCambioMs', 1000, 300000],
     ['animacion', 'duracionDeTransicionMs', 0, 10000], ['animacion', 'velocidadDeAnimacion', 0.1, 4],
@@ -121,6 +126,14 @@ function validateSettings(input) {
   for (const [section, key] of [['juego', 'guardarProgresoEnNavegador'], ['audio', 'activarSonido'], ['entidad', 'activarEventosAmbientales'], ['edificio', 'activarMapasDeTransformacion'], ['edificio', 'usarSemillaFija'], ['depuracion', 'activarModoDepuracion'], ['depuracion', 'mostrarColisiones']]) {
     copyBoolean(section, key, `${section}.${key}`);
   }
+  if (isRecord(input.progresion)) {
+    if (Array.isArray(input.progresion.habitacionesIniciales) && input.progresion.habitacionesIniciales.every((room) => typeof room === 'string')) {
+      settings.progresion.habitacionesIniciales = [...input.progresion.habitacionesIniciales];
+    } else issues.push('progresion.habitacionesIniciales: se usarán las habitaciones iniciales predeterminadas.');
+    if (Array.isArray(input.progresion.salidaRequiere) && input.progresion.salidaRequiere.every((id) => typeof id === 'string')) {
+      settings.progresion.salidaRequiere = [...input.progresion.salidaRequiere];
+    } else issues.push('progresion.salidaRequiere: se usarán los requisitos predeterminados.');
+  } else issues.push('progresion: se aplicará la progresión predeterminada.');
   copyNumber('edificio', 'numeroDeHabitacionesDelPrototipo', 'edificio.numeroDeHabitacionesDelPrototipo', 1, 32, true);
   for (const puzzleId of Object.keys(settings.puzzles)) {
     const puzzle = input.puzzles?.[puzzleId];
@@ -134,10 +147,15 @@ function validateSettings(input) {
       else issues.push(`puzzles.${puzzleId}.${key}: se usará el valor predeterminado.`);
     }
   }
-  const mission = input.misiones?.[0];
-  if (isRecord(mission) && ['id', 'titulo', 'destino', 'estadoVisible'].every((key) => typeof mission[key] === 'string' && mission[key].trim())) {
-    settings.misiones = [{ ...settings.misiones[0], ...mission }];
-  } else issues.push('misiones: se usará la primera misión predeterminada.');
+  if (Array.isArray(input.misiones) && input.misiones.length && input.misiones.every((mission) => isRecord(mission)
+    && ['id', 'titulo', 'destino', 'habitacion'].every((key) => typeof mission[key] === 'string' && mission[key].trim())
+    && ['requisitos', 'desbloqueaHabitaciones', 'completadaCuando'].every((key) => Array.isArray(mission[key]) && mission[key].every((value) => typeof value === 'string')))) {
+    settings.misiones = input.misiones.map((mission, index) => ({
+      ...settings.misiones[Math.min(index, settings.misiones.length - 1)],
+      ...mission,
+      estadoInicial: ['activa', 'pendiente'].includes(mission.estadoInicial) ? mission.estadoInicial : (index === 0 ? 'activa' : 'pendiente'),
+    }));
+  } else issues.push('misiones: se usará la secuencia predeterminada.');
   if (Array.isArray(input.camaras?.canales) && input.camaras.canales.length === 3 && input.camaras.canales.every((channel) => isRecord(channel) && ['id', 'ubicacion', 'vista'].every((key) => typeof channel[key] === 'string' && channel[key].trim()))) {
     settings.camaras.canales = input.camaras.canales.map((channel) => ({ ...channel }));
   } else issues.push('camaras.canales: se usarán los tres canales predeterminados.');
