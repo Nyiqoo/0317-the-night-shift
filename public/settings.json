@@ -2,7 +2,7 @@
   "juego": {
     "nombre": "03:17 — THE NIGHT SHIFT",
     "idioma": "es",
-    "horaDeInicio": "03:17",
+    "horaDeInicio": "03:23",
     "guardarProgresoEnNavegador": false,
     "datosDePartidaIniciales": {}
   },
@@ -50,7 +50,7 @@
     "intensidadDeParpadeo": 0.25
   },
   "audio": {
-    "activarSonido": false,
+    "activarSonido": true,
     "volumenMusica": 0.25,
     "volumenAmbiente": 0.3,
     "volumenEfectos": 0.5
@@ -74,7 +74,7 @@
     "canales": [
       { "id": "CAM-01", "ubicacion": "Pasillo principal", "vista": "hallway" },
       { "id": "CAM-02", "ubicacion": "Archivo administrativo", "vista": "archive" },
-      { "id": "CAM-03", "ubicacion": "Cafetería", "vista": "cafeteria" }
+      { "id": "CAM-03", "ubicacion": "Oficina de seguridad", "vista": "security" }
     ]
   },
   "edificio": {

@@ -1,10 +1,17 @@
 export class CCTVPanel {
-  constructor(channels, startTime = '03:17') {
+  constructor(channels, startTime = '03:23', audio = null) {
     this.channels = channels;
     this.startTime = startTime;
+    this.audio = audio;
     this.selectedIndex = 0;
     this.startedAt = performance.now();
     this.panel = document.querySelector('#cctv-panel');
+    this.panel.hidden = true;
+    this.panel.setAttribute('role', 'dialog');
+    this.panel.setAttribute('aria-modal', 'true');
+    document.querySelector('.stage-frame').append(this.panel);
+    this.enabled = false;
+    this.isOpen = false;
     this.feed = document.querySelector('#camera-feed');
     this.buttons = [...document.querySelectorAll('.camera-button')];
     this.onClick = (event) => {
@@ -18,6 +25,7 @@ export class CCTVPanel {
 
   select(index) {
     if (!Number.isInteger(index) || index < 0 || index >= this.channels.length) return;
+    if (this.enabled && this.selectedIndex !== index) this.audio?.play('cctv');
     this.selectedIndex = index;
     const channel = this.channels[index];
     document.querySelector('#camera-id').textContent = channel.id;
@@ -56,7 +64,20 @@ export class CCTVPanel {
   }
 
   setEnabled(enabled) {
-    this.panel.hidden = !enabled;
+    this.enabled = enabled;
+    if (!enabled) this.close();
+  }
+
+  open() {
+    if (!this.enabled) return;
+    this.isOpen = true;
+    this.panel.hidden = false;
+    this.audio?.play('cctv');
+  }
+
+  close() {
+    this.isOpen = false;
+    this.panel.hidden = true;
   }
 
   destroy() {

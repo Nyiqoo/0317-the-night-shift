@@ -106,3 +106,140 @@ body[data-room="hallway"] .camera-panel { opacity: .48; }
 @keyframes cctv-interference { 0%, 94%, 100% { opacity: .2; transform: translateY(0); } 95% { opacity: .34; transform: translateY(1px); } 96% { opacity: .13; transform: translateY(-1px); } }
 @media (max-width: 980px) { .layout { width: min(760px, calc(100% - 28px)); grid-template-columns: 1fr; }.operations-panel { margin-top: 4px; }.camera-controls { grid-template-columns: 1fr 1fr 1fr; }.camera-button { flex-direction: column; align-items: flex-start; gap: 4px; }.stage-frame { max-height: none; } }
 @media (max-width: 560px) { .layout { width: calc(100% - 18px); padding-top: 12px; }.masthead { min-height: 55px; }.stage-heading { gap: 7px; font-size: 7px; }.stage-heading strong { font-size: 8px; }.camera-controls { grid-template-columns: 1fr; }.camera-button { flex-direction: row; align-items: center; }.controls-inline { justify-content: flex-start; gap: 11px; } }
+
+/* Pantalla de inicio, misión emergente y tratamiento nocturno pixelado */
+#game canvas { image-rendering: pixelated; }
+.scanlines { opacity: .72; background: radial-gradient(circle at var(--light-x,50%) var(--light-y,50%), transparent 0, #02040814 76px, #0204089c 152px, #020408f2 240px), repeating-linear-gradient(0deg, #d9e4d810 0 1px, transparent 1px 4px); }
+.player-light { position: absolute; z-index: 1; width: var(--halo-size, 220px); height: var(--halo-size, 220px); transform: translate(-50%,-50%); pointer-events: none; border-radius: 50%; background: radial-gradient(circle, #f0f4cf88 0, #d8efaa65 18%, #bdd99242 43%, #c1df9817 67%, transparent 78%); mix-blend-mode: screen; filter: blur(2px); }
+.mission-panel { display: none; }
+.mission-open { position:absolute; z-index:2; top:12px; right:12px; max-width:min(250px,60vw); padding:8px 10px; border:1px solid #bdca9b70; background:#0a1110e8; color:#dce6ce; font:10px/1.4 monospace; text-align:left; white-space:normal; cursor:pointer; }
+.mission-popup { position:absolute; z-index:5; top:50%; left:50%; transform:translate(-50%,-50%); width:min(430px,calc(100% - 28px)); border:1px solid #87947c; background:#0b1110f5; box-shadow:0 20px 70px #000c; }
+.mission-popup[hidden],.start-screen[hidden] { display:none; }
+.popup-close { position:absolute; z-index:1; top:6px; right:8px; border:0; background:none; color:#dbe4d4; font-size:23px; cursor:pointer; }
+.start-screen { position:absolute; z-index:6; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; background:#05090be8; text-align:center; }
+.start-screen h2 { margin:10px 0; color:#e6eadb; font:500 clamp(24px,4vw,42px) monospace; }
+.start-screen h2 span { display:block; margin-top:6px; color:#9ba99a; font-size:.48em; letter-spacing:.14em; }
+.start-screen p:not(.eyebrow) { color:#aab3a8; font-size:12px; }
+.start-controls { display:grid; gap:8px; margin:18px 0 24px; color:#b5c0b3; font:10px monospace; }
+.start-screen button { padding:12px 24px; border:1px solid #b3c397; background:#82916b; color:#10150f; font:700 12px monospace; cursor:pointer; }
+.play-area { position:relative; }
+.document-modal { position:absolute; z-index:7; top:50%; left:50%; transform:translate(-50%,-50%); width:min(460px,calc(100% - 28px)); padding:24px; border:1px solid #a4ad8c; background:#0a100ff5; color:#e1e6d8; box-shadow:0 22px 80px #000e; }
+.document-modal[hidden] { display:none; }
+.document-modal h2 { margin:12px 25px 14px 0; color:#e2e8d9; font:600 17px monospace; }
+.document-modal #document-text { min-height:48px; color:#c0cbbb; font:13px/1.8 monospace; }
+.document-modal small,.modal-hint { color:#859285; font:9px monospace; }
+.document-modal ul { display:grid; gap:10px; padding-left:18px; color:#c0cbbb; font:11px/1.6 monospace; }
+.clue-toggle { position:absolute; z-index:2; top:12px; left:12px; padding:8px 10px; border:1px solid #bdca9b70; background:#0a1110e8; color:#dce6ce; font:10px monospace; cursor:pointer; }
+.game-message { position:absolute; z-index:4; left:50%; bottom:44px; transform:translateX(-50%); width:min(88%,700px); min-height:0; margin:0; padding:0; border:0; background:transparent; color:#a98736; text-align:center; font:13px 'Courier New',monospace; letter-spacing:.04em; line-height:1.5; text-shadow:0 0 7px #87631e66; opacity:1; transition:opacity 1.2s ease; pointer-events:none; }
+.game-message.message-fade { opacity:0; }
+.camera-panel:not([hidden]) { position:absolute; z-index:8; top:50%; left:50%; transform:translate(-50%,-50%); display:block; width:min(620px,calc(100% - 28px)); max-height:92%; overflow:auto; padding:9px; border:1px solid #b1bd9b; background:#080d0cf5; box-shadow:0 0 0 999px #010305b8,0 0 42px #b9d19a2e; }
+.camera-panel .panel-heading,.camera-note { display:none; }
+.camera-panel .camera-content { padding:0; }
+.camera-panel .camera-frame { padding:10px; border-color:#68765e; }
+.camera-panel .camera-feed { aspect-ratio:16/9; }
+.camera-panel .camera-controls { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin-top:8px; }
+.camera-panel .camera-button { flex-direction:column; align-items:flex-start; gap:5px; padding:8px; }
+.camera-panel .camera-location { padding:9px 2px 1px; }
+.puzzle-modal { z-index: 9; }
+.puzzle-modal > p:not(.eyebrow):not(.modal-hint) { color:#aeb9ab; font:11px/1.6 monospace; }
+.event-slots { display:grid; gap:9px; margin:17px 0 12px; }
+.event-slots label { display:grid; grid-template-columns:25px 1fr; align-items:center; gap:8px; color:#b8c69e; font:10px monospace; }
+.event-slots select { width:100%; padding:9px; border:1px solid #71816e; background:#101815; color:#d8dfd1; font:10px monospace; }
+#puzzle-feedback { min-height:30px; color:#c1a46c; font:10px/1.5 monospace; }
+#puzzle-submit { padding:9px 12px; border:1px solid #9eac85; background:#29352b; color:#dce5d2; font:10px monospace; cursor:pointer; }
+#puzzle-submit:hover { background:#394735; }
+.memory-overlay { position:absolute; z-index:10; inset:0; display:grid; place-items:center; overflow:hidden; background:radial-gradient(ellipse at center,#111918f5 0,#050809f8 62%,#020405 100%); animation:memory-fade-in .35s ease-out; }
+.memory-overlay[hidden] { display:none; }
+.memory-frame { width:min(76%,520px); text-align:center; }
+.memory-scene { position:relative; display:block; width:100%; height:clamp(130px,32vw,240px); overflow:hidden; margin:auto; border:1px solid #516052; background:linear-gradient(#1b2624 0 62%,#111816 62%); box-shadow:0 0 26px #a5bd8a10; animation:memory-breathe 1.8s ease-in-out infinite alternate; }
+.memory-scene::before,.memory-scene::after { position:absolute; content:""; }
+.memory-scene::before { left:50%; bottom:15%; width:34%; height:39%; transform:translateX(-50%); background:#293531; border:1px solid #566151; }
+.memory-scene::after { left:50%; top:15%; width:3px; height:40%; transform:translateX(-50%); background:#b3c79a55; box-shadow:-90px 12px 0 #94a78a16,90px 12px 0 #94a78a16; }
+.memory-overlay[data-scene="hand"] .memory-scene::before { left:50%; bottom:14%; width:70px; height:24px; border-radius:18px 18px 4px 4px; transform:translateX(-50%) rotate(-16deg); background:#807466; box-shadow:18px -14px 0 -7px #a4937c,28px -10px 0 -8px #a4937c,37px -5px 0 -9px #a4937c; }
+.memory-overlay[data-scene="voice"] .memory-scene::before { width:32%; height:42%; background:repeating-linear-gradient(0deg,#7c987544 0 2px,transparent 2px 11px); }
+.memory-overlay[data-scene="static"] .memory-scene { background:repeating-linear-gradient(0deg,#9da68b22 0 2px,#09100f 2px 7px),#111816; }
+.memory-overlay[data-scene="static"] .memory-scene::before { display:none; }
+.memory-overlay[data-scene="hall"] .memory-scene::before { inset:12% 32% 0; width:auto; height:auto; transform:none; background:linear-gradient(90deg,#080c0c,#26302b 48%,#080c0c); clip-path:polygon(34% 0,66% 0,100% 100%,0 100%); }
+.memory-frame p { min-height:2.8em; margin:20px 0 0; color:#c0bd91; font:12px/1.6 monospace; text-shadow:0 0 12px #a5a06a44; }
+@keyframes memory-fade-in { from { opacity:0; } to { opacity:1; } }
+@keyframes memory-breathe { from { opacity:.72; filter:brightness(.8); } to { opacity:1; filter:brightness(1.08); } }
+@media (prefers-reduced-motion: reduce) { .memory-overlay,.memory-scene { animation:none; } }
+
+/* Ocupa el viewport disponible; conserva una cuadrícula usable en móvil. */
+html, body { width:100%; min-height:100%; }
+body { min-height:100dvh; overflow-x:hidden; }
+.layout { width:100%; height:100dvh; min-height:420px; margin:0; padding:10px 16px; grid-template-columns:minmax(0,1fr) minmax(270px,320px); grid-template-rows:54px minmax(0,1fr); column-gap:16px; row-gap:0; }
+.masthead { min-height:0; }
+.play-area { display:flex; min-height:0; flex-direction:column; }
+.stage-heading { flex:0 0 38px; min-height:38px; }
+.stage-frame { flex:1 1 auto; width:100%; height:auto; min-height:0; max-height:none; aspect-ratio:auto; }
+#game { width:100%; height:100%; min-height:0; }
+.operations-panel { min-height:0; max-height:calc(100dvh - 74px); margin-top:38px; overflow-y:auto; scrollbar-color:#425148 #0b1114; }
+.fullscreen-toggle { position:absolute; z-index:5; top:10px; right:10px; width:34px; height:30px; display:grid; place-items:center; padding:0; border:1px solid #b7c49b66; background:#08100fdb; color:#e0e9d4; font:20px/1 monospace; cursor:pointer; }
+.fullscreen-toggle:hover,.fullscreen-toggle:focus-visible { border-color:#cfdda9; background:#18221b; outline:none; }
+.layout:fullscreen { width:100vw; height:100dvh; min-height:0; padding:10px 16px; background:#080e12; }
+.interaction-prompt { max-width:min(92%,680px); padding:9px 12px; white-space:normal; text-align:center; color:#f0e8c6; font-size:11px; background:#08100fee; }
+.document-modal,.mission-popup { border-color:#7e8c7c; background:#0a100ff7; box-shadow:0 18px 60px #000c; }
+.document-modal { max-height:calc(100% - 28px); overflow-y:auto; padding:22px clamp(17px,3vw,26px); }
+.document-modal h2,.mission-popup h2 { font-family:'Courier New',monospace; font-size:clamp(16px,1.5vw,20px); line-height:1.35; }
+.document-modal #document-text,.document-modal ul { color:#d0d7c9; font-size:clamp(12px,1vw,14px); line-height:1.75; }
+.document-modal small,.modal-hint { font-size:10px; }
+.mission-popup { padding:14px 16px; }
+.mission-popup .panel-heading > div { min-width:0; flex:1; }
+#mission-heading { max-width:260px; font-size:clamp(12px,1.2vw,15px); overflow-wrap:anywhere; }
+.mission-content h3 { font-size:13px; line-height:1.55; }
+.mission-details strong,.pending-block li { font-size:10px; }
+.mission-details span,.pending-block li small { font-size:8px; }
+.clue-toggle,.mission-open { font-size:11px; }
+.puzzle-modal.mechanism-opening { animation: mechanism-open .52s ease-in-out; }
+@keyframes mechanism-open { 0%,100% { transform:translate(-50%,-50%) scale(1); } 40% { transform:translate(-50%,-50%) scale(1.035); } 75% { transform:translate(-50%,-50%) scale(.985); } }
+.scanlines { opacity:.58; background:radial-gradient(circle at var(--light-x,50%) var(--light-y,50%),transparent 0 105px,#02040824 270px,#02040878 560px,#020408c2 1000px),repeating-linear-gradient(0deg,#d9e4d810 0 1px,transparent 1px 4px); }
+.player-light { background:radial-gradient(circle,#f0f4cf92 0,#d8efaa70 19%,#bdd99250 45%,#c1df9820 70%,transparent 80%); }
+@media (prefers-reduced-motion:reduce) { .puzzle-modal.mechanism-opening { animation:none; } }
+@media (max-width:900px) {
+  .layout { height:auto; min-height:100dvh; grid-template-columns:minmax(0,1fr); grid-template-rows:54px auto auto; padding:8px 12px 14px; }
+  .play-area { min-height:0; }
+  .stage-frame { flex:none; height:auto; aspect-ratio:3/2; max-height:72dvh; }
+  #game { height:100%; }
+  .operations-panel { display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,.7fr); align-items:start; max-height:none; margin-top:8px; overflow:visible; }
+  .controls-panel { grid-column:1/-1; }
+  .layout:fullscreen { height:100dvh; min-height:0; grid-template-rows:46px minmax(0,1fr) minmax(110px,20dvh); padding:6px 8px; }
+  .layout:fullscreen .play-area { min-height:0; }
+  .layout:fullscreen .stage-frame { flex:1 1 auto; height:auto; aspect-ratio:auto; max-height:none; }
+  .layout:fullscreen .operations-panel { display:grid; grid-template-columns:minmax(0,1fr) minmax(200px,.7fr); max-height:none; margin-top:4px; overflow-y:auto; }
+  .layout:fullscreen .controls-panel { display:none; }
+}
+@media (max-width:560px) {
+  .layout { padding-inline:8px; }
+  .masthead { gap:9px; }
+  .brand-mark { width:38px; height:36px; }
+  .operations-panel { grid-template-columns:minmax(0,1fr); }
+  .camera-panel { grid-column:1; }
+  .controls-panel { grid-column:1; }
+  .layout:fullscreen { padding:4px; }
+  .layout:fullscreen .stage-heading { flex-basis:30px; min-height:30px; }
+  .layout:fullscreen .operations-panel { grid-template-columns:minmax(0,1fr); }
+}
+
+/* El juego, y no el panel del sitio, ocupa todo el modo de pantalla completa. */
+.fullscreen-mission-open { display:none; }
+.stage-frame:fullscreen { position:fixed; inset:0; z-index:2147483647; display:block; width:100vw !important; height:100dvh !important; min-height:0; max-height:none; margin:0; padding:0; aspect-ratio:auto; overflow:hidden; border:0; background:#020305; }
+.stage-frame:fullscreen::backdrop { background:#020305; }
+.stage-frame:fullscreen #game { width:100% !important; height:100% !important; min-height:0; }
+.stage-frame:fullscreen #game canvas { width:100% !important; height:100% !important; max-width:none; max-height:none; }
+.stage-frame:fullscreen .fullscreen-mission-open { position:absolute; z-index:5; top:10px; left:10px; right:auto; display:block; max-width:min(300px,45vw); padding:7px 10px; border:1px solid #bdca9b70; background:#080e0ee8; color:#e4e9dc; font:10px/1.4 monospace; text-align:left; white-space:normal; cursor:pointer; }
+.stage-frame:fullscreen .fullscreen-mission-open:hover { border-color:#cfdda9; background:#18221b; }
+.stage-frame:fullscreen .fullscreen-toggle { top:10px; right:10px; }
+.stage-frame:fullscreen .mission-popup { z-index:6; }
+
+/* Apaga el entorno alrededor del haz local del guardia. */
+.scanlines { opacity:.84; background:radial-gradient(circle at var(--light-x,50%) var(--light-y,50%),transparent 0 70px,#01020456 112px,#020307c9 220px,#010205f4 360px,#010204ff 600px),repeating-linear-gradient(0deg,#d9e4d80c 0 1px,transparent 1px 4px); }
+.player-light { background:radial-gradient(circle,#e7edc772 0,#d8e4b14f 22%,#c3d99e33 48%,#c1df9813 68%,transparent 82%); opacity:.42; mix-blend-mode:screen; filter:blur(12px); }
+.layout:fullscreen { position:fixed; inset:0; z-index:2147483646; display:block; width:100vw; height:100dvh; min-height:0; margin:0; padding:0; overflow:hidden; background:#020305; }
+.layout:fullscreen > .masthead,.layout:fullscreen > .operations-panel,.layout:fullscreen > .settings-warning,.layout:fullscreen .stage-heading { display:none !important; }
+.layout:fullscreen .play-area { position:absolute; inset:0; display:block; width:100vw; height:100dvh; }
+.layout:fullscreen .stage-frame { position:absolute; inset:0; display:block; width:100%; height:100%; min-height:0; max-height:none; margin:0; padding:0; aspect-ratio:auto; overflow:hidden; border:0; }
+.layout:fullscreen .fullscreen-mission-open { position:absolute; z-index:5; top:10px; left:10px; right:auto; display:block; max-width:min(300px,45vw); padding:7px 10px; border:1px solid #bdca9b70; background:#080e0ee8; color:#e4e9dc; font:10px/1.4 monospace; text-align:left; white-space:normal; cursor:pointer; }
+.layout:fullscreen #game,.layout:fullscreen #game canvas { width:100% !important; height:100% !important; min-height:0; max-width:none; max-height:none; }
+.layout:fullscreen .mission-popup { z-index:6; }
+body[data-ceiling-lights="on"] .scanlines { opacity:.6; background:radial-gradient(circle at var(--light-x,50%) var(--light-y,50%),transparent 0 70px,#01020428 150px,#02030780 350px,#010205d9 700px),repeating-linear-gradient(0deg,#d9e4d80c 0 1px,transparent 1px 4px); }

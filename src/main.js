@@ -3,6 +3,7 @@ import { loadSettings } from './config.js';
 import { SecurityOfficeScene } from './scenes/SecurityOfficeScene.js';
 import { CCTVPanel } from './ui/CCTVPanel.js';
 import { MissionBoard } from './ui/MissionBoard.js';
+import { AudioDirector } from './audio/AudioDirector.js';
 
 const { settings, issues } = await loadSettings();
 document.title = settings.juego.nombre;
@@ -17,7 +18,8 @@ if (issues.length) {
   console.warn('Configuración inválida; se usaron valores predeterminados:', issues);
 }
 
-const cctv = new CCTVPanel(settings.camaras.canales, settings.juego.horaDeInicio);
+const audio = new AudioDirector(settings.audio);
+const cctv = new CCTVPanel(settings.camaras.canales, settings.juego.horaDeInicio, audio);
 new MissionBoard(settings.misiones);
 
 const game = new Phaser.Game({
@@ -34,11 +36,35 @@ const game = new Phaser.Game({
     default: 'arcade',
     arcade: { gravity: { x: 0, y: 0 }, debug: settings.depuracion.mostrarColisiones },
   },
-  render: { antialias: false, pixelArt: false, roundPixels: true },
-  scene: [new SecurityOfficeScene(settings, cctv)],
+  render: { antialias: false, pixelArt: true, roundPixels: true },
+  scene: [new SecurityOfficeScene(settings, cctv, audio)],
+});
+
+const fullscreenButton = document.querySelector('#fullscreen-toggle');
+const gameLayout = document.querySelector('.layout');
+fullscreenButton.addEventListener('click', async () => {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else await gameLayout.requestFullscreen();
+  } catch (error) {
+    console.warn('No se pudo activar la pantalla completa:', error);
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  const active = document.fullscreenElement === gameLayout;
+  fullscreenButton.setAttribute('aria-label', active ? 'Salir de pantalla completa' : 'Activar pantalla completa');
+  fullscreenButton.title = active ? 'Salir de pantalla completa' : 'Pantalla completa';
+  requestAnimationFrame(() => {
+    // Keep the full room, including the lower exit/player spawn, in view on wide displays.
+    const mode = active ? Phaser.Scale.NONE : (settings.pantalla.ajustarAlNavegador ? Phaser.Scale.FIT : Phaser.Scale.NONE);
+    game.scale.scaleMode = mode;
+    if (mode !== Phaser.Scale.NONE) game.scale.displaySize.setAspectMode(mode);
+    game.scale.refresh();
+  });
 });
 
 window.addEventListener('beforeunload', () => {
   game.destroy(true);
   cctv.destroy();
+  audio.destroy();
 });

@@ -1,5 +1,5 @@
 export const DEFAULT_SETTINGS = {
-  juego: { nombre: '03:17 — THE NIGHT SHIFT', idioma: 'es', horaDeInicio: '03:17', guardarProgresoEnNavegador: false, datosDePartidaIniciales: {} },
+  juego: { nombre: '03:17 — THE NIGHT SHIFT', idioma: 'es', horaDeInicio: '03:23', guardarProgresoEnNavegador: false, datosDePartidaIniciales: {} },
   pantalla: { anchoLogico: 960, altoLogico: 640, ajustarAlNavegador: true, tamanoDePixel: 1 },
   jugador: {
     velocidad: 190,
@@ -16,7 +16,7 @@ export const DEFAULT_SETTINGS = {
     brillo: 0.88, contraste: 1, intensidadDeVineta: 0.3, nivelDeNiebla: 0,
   },
   animacion: { duracionDeTransicionMs: 350, velocidadDeAnimacion: 1, intensidadDeParpadeo: 0.25 },
-  audio: { activarSonido: false, volumenMusica: 0.25, volumenAmbiente: 0.3, volumenEfectos: 0.5 },
+  audio: { activarSonido: true, volumenMusica: 0.25, volumenAmbiente: 0.3, volumenEfectos: 0.5 },
   entidad: { activarEventosAmbientales: false, duracionDeAnomaliaMs: 1600, probabilidadDeAnomalia: 0.12, intervaloMinimoEntreEventosMs: 14000 },
   misiones: [{ id: 'archivo-administrativo', titulo: 'Revisa el archivo administrativo y localiza el expediente de mantenimiento del antiguo supervisor', destino: 'Archivo administrativo', estadoVisible: 'Activa · pendiente de visita' }],
   camaras: {
@@ -24,7 +24,7 @@ export const DEFAULT_SETTINGS = {
     canales: [
       { id: 'CAM-01', ubicacion: 'Pasillo principal', vista: 'hallway' },
       { id: 'CAM-02', ubicacion: 'Archivo administrativo', vista: 'archive' },
-      { id: 'CAM-03', ubicacion: 'Cafetería', vista: 'cafeteria' },
+      { id: 'CAM-03', ubicacion: 'Oficina de seguridad', vista: 'security' },
     ],
   },
   edificio: { numeroDeHabitacionesDelPrototipo: 8, activarMapasDeTransformacion: false, usarSemillaFija: true },

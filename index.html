@@ -22,42 +22,38 @@
         <div class="stage-heading">
           <span>UBICACIÓN ACTUAL</span>
           <strong id="room-name">Oficina de seguridad</strong>
-          <span id="shift-clock" class="clock">03:17 <small>AM</small></span>
+          <span id="shift-clock" class="clock">03:23 <small>AM</small></span>
         </div>
         <div class="stage-frame">
           <div id="game" aria-label="Oficina de seguridad en vista cenital"></div>
+          <button id="fullscreen-toggle" class="fullscreen-toggle" type="button" aria-label="Activar pantalla completa" title="Pantalla completa">⛶</button>
+          <button id="fullscreen-mission-open" class="fullscreen-mission-open" type="button">Tarea para la casa y tarea se fué <kbd>J</kbd></button>
           <div class="scanlines" aria-hidden="true"></div>
+          <div class="player-light" aria-hidden="true"></div>
+          <p id="game-message" class="game-message" role="status" aria-live="polite">La oficina está vacía. El teléfono conserva la oferta de trabajo que aceptaste.</p>
           <div id="pause-overlay" class="pause-overlay" hidden>
             <span class="eyebrow">TURNO EN PAUSA</span>
             <h2>Pausa</h2>
             <p>Pulsa <kbd>Esc</kbd> para volver al turno.</p>
           </div>
           <div id="interaction-prompt" class="interaction-prompt" hidden></div>
+          <section id="document-modal" class="document-modal" role="dialog" aria-modal="true" aria-labelledby="document-title" hidden><button id="document-close" class="popup-close" type="button" aria-label="Cerrar documento">×</button><p class="eyebrow">ARCHIVO ADMINISTRATIVO · LECTURA</p><h2 id="document-title"></h2><p id="document-text"></p><small id="document-progress"></small><p class="modal-hint">Esc · cerrar</p></section>
+          <button id="clue-toggle" class="clue-toggle" type="button" hidden>Investigación <span id="clue-count">0/4</span></button>
+          <section id="clue-modal" class="document-modal clue-modal" role="dialog" aria-modal="true" aria-labelledby="clue-title" hidden><button id="clue-close" class="popup-close" type="button" aria-label="Cerrar registro">×</button><p class="eyebrow">PISTAS REUNIDAS</p><h2 id="clue-title">Registro de investigación</h2><ul id="clue-list"></ul><p class="modal-hint">Esc · cerrar</p></section>
+          <section id="puzzle-modal" class="document-modal puzzle-modal" role="dialog" aria-modal="true" aria-labelledby="puzzle-title" hidden><button id="puzzle-close" class="popup-close" type="button" aria-label="Cerrar mecanismo">×</button><p class="eyebrow">PUZZLE 01 · MECANISMO</p><h2 id="puzzle-title">El registro imposible</h2><p>Reconstruye la secuencia a partir de las cuatro pistas reunidas.</p><div class="event-slots"><label>01<select id="slot-1"></select></label><label>02<select id="slot-2"></select></label><label>03<select id="slot-3"></select></label></div><p id="puzzle-feedback" role="status"></p><button id="puzzle-submit" type="button">Probar secuencia</button><p class="modal-hint">Esc · cerrar</p></section>
+          <section id="memory-overlay" class="memory-overlay" hidden><div class="memory-frame"><span id="memory-scene" class="memory-scene"></span><p id="memory-caption"></p></div></section>
+          <section id="mission-popup" class="mission-popup" aria-labelledby="mission-heading" hidden>
+            <button id="mission-close" class="popup-close" type="button" aria-label="Cerrar lista de tareas">×</button>
+            <div class="panel-heading"><span class="panel-index">01</span><div><h2 id="mission-heading">Tarea para la casa y tarea se fué</h2><p>ESTADO DEL TURNO</p></div><span class="mission-badge">EN CURSO</span></div>
+            <div class="mission-content"><p class="eyebrow">OBJETIVO ACTUAL</p><h3 id="mission-title"></h3><div class="mission-details"><div><span>DESTINO</span><strong id="mission-destination"></strong></div><div><span>ESTADO</span><strong id="mission-status"></strong></div></div><div class="pending-block"><span class="eyebrow">OBJETIVOS PENDIENTES</span><ul id="pending-objectives"></ul></div></div>
+          </section>
+          <section id="start-screen" class="start-screen"><p class="eyebrow">REGISTRO DE TURNO · 03:23 AM</p><h2>03:17 <span>— THE NIGHT SHIFT</span></h2><p>Tu primer turno nocturno empieza en la oficina de seguridad.</p><div class="start-controls"><span><kbd>W A S D</kbd> o flechas · moverse</span><span><kbd>E</kbd> · inspeccionar</span><span><kbd>L</kbd> · luces del techo</span><span><kbd>Esc</kbd> · pausa</span></div><button id="start-button" type="button">Iniciar turno</button></section>
         </div>
-        <p id="game-message" class="game-message" role="status" aria-live="polite">La oficina está vacía. El teléfono conserva la oferta de trabajo que aceptaste.</p>
         <p id="settings-warning" class="settings-warning" role="alert" hidden></p>
       </section>
 
       <aside class="operations-panel" aria-label="Centro de operaciones">
-        <section class="panel mission-panel" aria-labelledby="mission-heading">
-          <div class="panel-heading">
-            <span class="panel-index">01</span>
-            <div><h2 id="mission-heading">Lista de tareas</h2><p>ESTADO DEL TURNO</p></div>
-            <span class="mission-badge">EN CURSO</span>
-          </div>
-          <div class="mission-content">
-            <p class="eyebrow">OBJETIVO ACTUAL</p>
-            <h3 id="mission-title"></h3>
-            <div class="mission-details">
-              <div><span>DESTINO</span><strong id="mission-destination"></strong></div>
-              <div><span>ESTADO</span><strong id="mission-status"></strong></div>
-            </div>
-            <div class="pending-block">
-              <span class="eyebrow">OBJETIVOS PENDIENTES</span>
-              <ul id="pending-objectives"></ul>
-            </div>
-          </div>
-        </section>
+        <button id="mission-open" class="mission-open" type="button">Tarea para la casa y tarea se fué <kbd>J</kbd></button>
 
         <section id="cctv-panel" class="panel camera-panel" aria-labelledby="camera-heading">
           <div class="panel-heading">
@@ -67,7 +63,7 @@
           </div>
           <div class="camera-content">
             <div class="camera-frame">
-              <div class="camera-meta"><span id="camera-id">CAM-01</span><span id="camera-time">03:17:00</span></div>
+              <div class="camera-meta"><span id="camera-id">CAM-01</span><span id="camera-time">03:23:00</span></div>
               <div id="camera-feed" class="camera-feed" role="img" aria-label="Vista de cámara: Pasillo principal">
                 <svg viewBox="0 0 320 150" aria-hidden="true" class="camera-art">
                   <defs>
@@ -91,13 +87,22 @@
                     <path d="M29 25h12v19H29zM48 27h15v17H48zM72 23h22v21H72zM28 56h17v20H28zM54 57h13v19H54zM75 54h25v22H75zM224 24h14v20h-14zM246 25h22v19h-22zM275 24h16v20h-16zM224 55h21v21h-21zM253 55h16v21h-16zM276 57h16v19h-16z" fill="#b3a37b" fill-opacity=".75"/>
                     <path d="M139 0v150M181 0v150" stroke="#a6c4a3" stroke-opacity=".16"/>
                   </g>
-                  <g data-camera-scene="cafeteria" hidden>
-                    <rect width="320" height="150" fill="#374440"/>
-                    <path d="M0 104h320v46H0z" fill="url(#feed-floor)"/>
-                    <path d="M0 42h77v48H0zM243 41h77v49h-77z" fill="#1d2927" stroke="#92a096" stroke-opacity=".45" stroke-width="2"/>
-                    <path d="M102 96h116v8H102zM116 104v30M202 104v30M32 104h77v7H32zM44 111v23M97 111v23M211 104h77v7h-77zM223 111v23M276 111v23" fill="#9a8766"/>
-                    <path d="M151 79h18v17h-18zM154 74h12v6h-12zM154 85h12" fill="#c7c8ad"/>
-                    <path d="M34 32h58M228 30h55" stroke="#d1d1b2" stroke-opacity=".5" stroke-width="4"/>
+                  <g data-camera-scene="security" hidden>
+                    <rect width="320" height="150" fill="#263431"/>
+                    <path d="M16 14h288v122H16z" fill="#33433e" stroke="#a2ad98" stroke-opacity=".65" stroke-width="5"/>
+                    <path d="M26 25h52v37H26z" fill="#192421" stroke="#809184" stroke-width="3"/>
+                    <path d="M112 24h156v38H112z" fill="#111b1a" stroke="#8a9b8c" stroke-width="3"/>
+                    <path d="M123 31h39v24h-39zM171 31h39v24h-39zM219 31h39v24h-39z" fill="#60776a" stroke="#bbc5ae" stroke-width="2"/>
+                    <path d="M82 76h156v45H82z" fill="#536257" stroke="#aa9a75" stroke-width="4"/>
+                    <path d="M135 121h51v12h-51zM282 32v15" stroke="#c4b68f" stroke-width="5"/>
+                    <path d="M25 72h42v48H25z" fill="#46544a" stroke="#9ba28b" stroke-width="2"/>
+                    <g aria-label="Logo de Codex" transform="translate(31 86)">
+                      <rect x="0" y="0" width="32" height="23" rx="2" fill="#d8ddd4" stroke="#65756b" stroke-width="1"/>
+                      <path d="M5 11c0-2 2-4 4-4 1-3 5-4 7-1 3-1 6 1 6 4 2 1 2 4-1 5H9c-3 0-4-2-4-4z" fill="#778fca"/>
+                      <path d="m10 10 3 2-3 2m5 0h4" fill="none" stroke="#f4f3e8" stroke-width="1.2" stroke-linecap="square"/>
+                      <text x="16" y="21" text-anchor="middle" font-family="monospace" font-size="3.5" font-weight="bold" fill="#25312d">CODEX</text>
+                    </g>
+                    <path d="M92 13v10M276 13v10" stroke="#d7ddc0" stroke-opacity=".55" stroke-width="4"/>
                   </g>
                   <path d="M0 17h320M0 42h320M0 67h320M0 92h320M0 117h320" stroke="#dce7d3" stroke-opacity=".08"/>
                 </svg>
@@ -108,14 +113,14 @@
             <div id="camera-controls" class="camera-controls" aria-label="Seleccionar cámara">
               <button class="camera-button selected" type="button" data-camera-index="0" aria-pressed="true"><span>CAM-01</span><small>Pasillo principal</small></button>
               <button class="camera-button" type="button" data-camera-index="1" aria-pressed="false"><span>CAM-02</span><small>Archivo administrativo</small></button>
-              <button class="camera-button" type="button" data-camera-index="2" aria-pressed="false"><span>CAM-03</span><small>Cafetería</small></button>
+              <button class="camera-button" type="button" data-camera-index="2" aria-pressed="false"><span>CAM-03</span><small>Oficina de seguridad</small></button>
             </div>
             <p class="camera-note">La señal presenta interferencia leve. Sin grabaciones disponibles.</p>
           </div>
         </section>
 
         <section class="panel controls-panel" aria-label="Controles">
-          <div class="controls-inline"><span><kbd>W A S D</kbd> mover</span><span><kbd>E</kbd> interactuar</span><span><kbd>Esc</kbd> pausa</span></div>
+          <div class="controls-inline"><span><kbd>W A S D</kbd> mover</span><span><kbd>E</kbd> interactuar</span><span><kbd>L</kbd> luces techo</span><span><kbd>Esc</kbd> pausa</span></div>
         </section>
       </aside>
     </main>

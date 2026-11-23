@@ -1,6 +1,6 @@
 # 03:17 — THE NIGHT SHIFT
 
-Juego de terror psicológico 2D para navegador. En el turno inicial, un guardia contratado para una noche aparentemente normal recorre la oficina de seguridad, recibe su primera tarea y consulta tres cámaras del edificio.
+Juego de terror psicológico 2D para navegador. En el turno inicial, un guardia contratado para una noche aparentemente normal recorre la oficina de seguridad, el pasillo principal y el archivo administrativo, recibe su primera tarea y consulta tres cámaras del edificio.
 
 ## Requisitos
 
@@ -24,12 +24,14 @@ pnpm preview
 
 ## Probar esta entrega
 
-1. Recorre la oficina y confirma que los muros, escritorio, silla y archivador bloquean el paso.
+1. Recorre la oficina, sal al pasillo y entra al archivo administrativo. Usa `E` junto a cada puerta para cruzar entre los espacios.
 2. Acércate a la lista de tareas del escritorio y pulsa `E`.
 3. Acércate a los monitores o usa los botones del panel CCTV para cambiar entre CAM-01, CAM-02 y CAM-03. Comprueba que cambian la imagen, el identificador y la ubicación.
 4. Acércate al teléfono y pulsa `E` para escuchar el mensaje de contratación.
-5. Ve a la puerta al sur de la oficina, pulsa `E` y confirma que puedes salir al pasillo principal. En el pasillo puedes volver a la oficina; el archivo queda reservado para el siguiente paso.
-6. Pulsa `Esc` para pausar y reanudar el movimiento.
+5. Inspecciona los archivadores, el archivador mecánico, la caja de registros, los documentos del escritorio, la carpeta sin rótulo y el terminal. Sus indicadores `E` aparecen junto a cada punto interactivo.
+6. Camina por el pasillo y el archivo para confirmar que las paredes y los muebles tienen colisiones y dejan libres los accesos y objetos.
+7. Pulsa `L` para encender o apagar las luminarias del techo; el ajuste se conserva al cambiar de habitación durante esta sesión.
+8. Pulsa `Esc` para pausar y reanudar el movimiento.
 
 ## Controles
 
@@ -37,6 +39,7 @@ pnpm preview
 | --- | --- |
 | `W A S D` o flechas | Moverse en cuatro direcciones |
 | `E` | Interactuar con un objeto o puerta cercana; junto al CCTV avanza el canal |
+| `L` | Encender o apagar las luces del techo |
 | `Esc` | Pausar o reanudar |
 | Ratón | Seleccionar un canal CCTV |
 
@@ -66,12 +69,13 @@ Los ajustes de anomalías, puzles y transformaciones están preparados para ampl
 
 - `src/main.js`: carga de configuración y arranque de Phaser.
 - `src/config.js`: valores predeterminados y validación.
-- `src/scenes/SecurityOfficeScene.js`: oficina, pasillo, movimiento, colisiones y puertas.
+- `src/scenes/SecurityOfficeScene.js`: oficina, pasillo, archivo, movimiento, colisiones, puertas y puntos de inspección.
+- `src/environment/NightOffice.js`: luminarias reutilizables y cambio entre ambiente nocturno y luces de techo.
 - `src/ui/MissionBoard.js`: tarea actual y asignaciones pendientes.
 - `src/ui/CCTVPanel.js`: selección de cámaras y reloj de vigilancia.
 - `public/settings.json`: ajustes y contenido editable.
 
-El progreso de esta entrega no se guarda. La tarea del archivo aparece como pendiente; no hay todavía acceso al archivo ni puzles. Esta entrega no incluye anomalías complejas ni grabaciones del pasado.
+El progreso de esta entrega no se guarda. La primera tarea sigue pendiente de localizar el expediente de mantenimiento. El archivador mecánico se puede inspeccionar, pero su puzzle todavía no está implementado. Esta entrega no incluye transformaciones del edificio, anomalías complejas ni grabaciones del pasado.
 
 ## Créditos y licencia
 
