@@ -1,5 +1,5 @@
 export const DEFAULT_SETTINGS = {
-  juego: { nombre: '03:17 — THE NIGHT SHIFT', idioma: 'es', horaDeInicio: '03:23', guardarProgresoEnNavegador: false, datosDePartidaIniciales: {} },
+  juego: { nombre: '03:23 — THE NIGHT SHIFT', idioma: 'es', horaDeInicio: '03:23', guardarProgresoEnNavegador: false, datosDePartidaIniciales: {} },
   pantalla: { anchoLogico: 960, altoLogico: 640, ajustarAlNavegador: true, tamanoDePixel: 1 },
   jugador: {
     velocidad: 190,

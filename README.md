@@ -1,4 +1,4 @@
-# 03:17 — THE NIGHT SHIFT
+# 03:23 — THE NIGHT SHIFT
 
 Juego de terror psicológico 2D para navegador. En el turno inicial, un guardia contratado para una noche aparentemente normal recorre la oficina de seguridad, el pasillo principal y el archivo administrativo, recibe su primera tarea y consulta tres cámaras del edificio.
 
