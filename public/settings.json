@@ -1,0 +1,94 @@
+{
+  "juego": {
+    "nombre": "03:17 — THE NIGHT SHIFT",
+    "idioma": "es",
+    "horaDeInicio": "03:17",
+    "guardarProgresoEnNavegador": false,
+    "datosDePartidaIniciales": {}
+  },
+  "pantalla": {
+    "anchoLogico": 960,
+    "altoLogico": 640,
+    "ajustarAlNavegador": true,
+    "tamanoDePixel": 1
+  },
+  "jugador": {
+    "velocidad": 190,
+    "radioDeColision": 12,
+    "radioDeInteraccion": 64,
+    "teclas": {
+      "arriba": ["W", "UP"],
+      "abajo": ["S", "DOWN"],
+      "izquierda": ["A", "LEFT"],
+      "derecha": ["D", "RIGHT"]
+    }
+  },
+  "controles": {
+    "interactuar": "E",
+    "pausar": "ESC"
+  },
+  "visual": {
+    "colores": {
+      "fondo": "#0a1117",
+      "piso": "#27363a",
+      "baldosaClara": "#354346",
+      "baldosaOscura": "#2d3b3e",
+      "muro": "#748178",
+      "puerta": "#997b58",
+      "muebles": "#48564f",
+      "acento": "#a6c4a3",
+      "texto": "#e3e7dc"
+    },
+    "brillo": 0.88,
+    "contraste": 1,
+    "intensidadDeVineta": 0.3,
+    "nivelDeNiebla": 0
+  },
+  "animacion": {
+    "duracionDeTransicionMs": 350,
+    "velocidadDeAnimacion": 1,
+    "intensidadDeParpadeo": 0.25
+  },
+  "audio": {
+    "activarSonido": false,
+    "volumenMusica": 0.25,
+    "volumenAmbiente": 0.3,
+    "volumenEfectos": 0.5
+  },
+  "entidad": {
+    "activarEventosAmbientales": false,
+    "duracionDeAnomaliaMs": 1600,
+    "probabilidadDeAnomalia": 0.12,
+    "intervaloMinimoEntreEventosMs": 14000
+  },
+  "misiones": [
+    {
+      "id": "archivo-administrativo",
+      "titulo": "Revisa el archivo administrativo y localiza el expediente de mantenimiento del antiguo supervisor",
+      "destino": "Archivo administrativo",
+      "estadoVisible": "Activa · pendiente de visita"
+    }
+  ],
+  "camaras": {
+    "frecuenciaDeCambioMs": 12000,
+    "canales": [
+      { "id": "CAM-01", "ubicacion": "Pasillo principal", "vista": "hallway" },
+      { "id": "CAM-02", "ubicacion": "Archivo administrativo", "vista": "archive" },
+      { "id": "CAM-03", "ubicacion": "Cafetería", "vista": "cafeteria" }
+    ]
+  },
+  "edificio": {
+    "numeroDeHabitacionesDelPrototipo": 8,
+    "activarMapasDeTransformacion": false,
+    "usarSemillaFija": true
+  },
+  "puzzles": {
+    "archivo": { "cantidadDePistas": 1, "temporizadorSegundos": 0, "facilidadDeInteraccion": 1 },
+    "comedor": { "cantidadDePistas": 1, "temporizadorSegundos": 0, "facilidadDeInteraccion": 1 },
+    "servidores": { "cantidadDePistas": 1, "temporizadorSegundos": 0, "facilidadDeInteraccion": 1 }
+  },
+  "depuracion": {
+    "activarModoDepuracion": false,
+    "mostrarColisiones": false
+  }
+}
